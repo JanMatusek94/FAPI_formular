@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulář FAPI</title>
+    <link rel="stylesheet" href="fapi_styles.css">
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <h1 id="title">Formulář</h1>  
+      </header>
+      <form action="fapi_rekap.php" id="survey-form" method="post">
+        <fieldset>
+          <legend>Osobní údaje</legend>
+          <label for="firstname" id="name-label">Jméno: <input type="text" id="firstname" name="firstname" maxlength="50" required /></label>
+          <label for="lastname" id="name-label">Příjmení: <input type="text" id="lastname" name="lastname" maxlength="50" required /></label>
+          <label id="email-label" for="email">Email: <input type="email" id="email" name="email" required /></label>
+          <label id="tel-label" for="telefon">Telefon: <input type="tel" name="telefon" id="telefon" required pattern="[0-9]{9}" placeholder="Zadej tel. číslo ve formátu: 123456789"/></label>
+          <label id="dat_nar_label" for="datePickerId">Datum narození: <input type="date" name="dat_nar" id="datePickerId" required /></label>
+          
+          <p>Pohlaví:</p>
+          <label><input type="radio" value="muz" name="pohlavi" class="inline" required/> Muž</label>
+          <label><input type="radio" value="zena" name="pohlavi" class="inline" required/> Žena</label>
+        </fieldset>
+        <hr>
+        <fieldset>
+          <legend>Produkty</legend>
+          <label for="dropdown">Produkty:
+            <select name="produkt" id="dropdown" onchange="price()" required>
+              <option disabled selected value>Vyber prosím produkt</option>
+              <option>Auto 250 000 Kč</option>
+              <option>Motorka 100 000 Kč</option>
+              <option>Loď 750 000 Kč</option>
+              <option>Vrtulník 900 000 Kč</option>
+            </select>
+          </label>
+          <label id="number-label" for="ks">Počet ks: <input type="number" id="ks" name="kusy" min="1" max="10" placeholder="max. počet: 10ks" required oninput="price()" /></label>
+          <label for="cena">Celková cena: <input readonly id="cena" name="cena" type="text"/> Kč </label>
+        </fieldset>
+        <hr>
+        <input type="submit" id="submit"/>
+      </form>
+    </div>
+    <script>
+      //funkce pro výpočet ceny v závisloti na kusech
+      function price() {
+        let vybranyProdukt = document.getElementById("dropdown");
+        let pocetKs = document.getElementById("ks").value;
+        let cena = document.getElementById("cena");
+        let a = vybranyProdukt.options[vybranyProdukt.selectedIndex].index;
+        switch(a) {
+          case 0:
+          cena.value = "Vyber produkt";
+          break;
+        case 1:
+          cena.value = 250000 * pocetKs;
+          break;
+        case 2:
+          cena.value = 100000 * pocetKs;
+          break;
+        case 3:
+          cena.value = 750000 * pocetKs;
+          break;
+        case 4:
+          cena.value = 900000 * pocetKs;
+          break;
+        default:
+          cena.value = "0 Kč";
+        }
+      }
+      //custom varovná hláška po špatném vyplnění tel. čísla
+      let tel = document.getElementById("telefon");
+      tel.addEventListener("input", function(e){
+        tel.setCustomValidity('');
+      });
+      tel.addEventListener("invalid", function(e){
+        tel.setCustomValidity('Prosím zadej číslo ve formátu: 123456789');
+      });
+      //omezení data narození na současné datum
+      datePickerId.max = new Date().toISOString().split("T")[0];
+    </script>
+  </body>
+</html>
